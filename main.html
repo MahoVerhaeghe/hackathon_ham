@@ -1,21 +1,31 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hackathon</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        #map {
-            height: 600px;
-            width: 100%;
-        }
-    </style>
+    <title>Bike Box Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Add Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
 </head>
 <body>
-    <h1>Carte de la Métropole Lilloise</h1>
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="main.js"></script>
+
+<div id="map" style="height: 600px;"></div>
+
+<div id="manualCoords" style="display:none;">
+    <h3>Enter Coordinates Manually:</h3>
+    <input type="text" id="latInput" placeholder="Latitude" />
+    <input type="text" id="lonInput" placeholder="Longitude" />
+    <button onclick="setManualLocation()">Set Location</button>
+</div>
+
+<button onclick="enableGeolocation()" style="position: absolute; top: 20px; left: 20px; padding: 10px;">Enable Geolocation</button>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- Add Leaflet Routing Machine JS -->
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="main.js"></script>
+
 </body>
 </html>
