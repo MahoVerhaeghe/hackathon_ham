@@ -1,5 +1,5 @@
 import express from 'express';
-import { getBikeShelters, getVlille } from './routes/routes';
+import { getBikeShelters, getVlille, getBoxBike, getRepairBike} from './routes/routes';
 
 import cron from 'node-cron'
 import axios from 'axios';
@@ -27,6 +27,6 @@ indexRouter.get('/ok', (req, res) => {
 
 indexRouter.get('/getBikeShelters', (req, res) => getBikeShelters(req, res));
 indexRouter.get('/getVlille', (req, res) => getVlille(req, res));
-indexRouter.get('')
-
+indexRouter.get('/getBoxBike', (req, res) => getBoxBike(req, res));
+indexRouter.get('/getRepairBike', (req, res) => getRepairBike(req, res));
 export default indexRouter;

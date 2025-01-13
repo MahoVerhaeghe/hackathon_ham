@@ -34,3 +34,35 @@ export async function getVlille(req, res)
         }
 }
 
+export async function getBoxBike(req, res)
+{
+   try {
+     const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+  };
+    let Vponse = await axios.get('https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ville_lille%3Abox_a_velos_a_lille_lomme_et_hellemmes&OUTPUTFORMAT=application%2Fjson',  config);
+    console.log('Requête GET effectuée:', Vponse.data);
+        res.status(200).json(Vponse.data.features);
+        } catch(error) {
+            res.status(400).json({err: "Une erreur s'est produite. Reessayez"});
+        }
+}
+
+
+export async function getRepairBike(req, res)
+{
+   try {
+     const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+  };
+    const Vponse = await axios.get('https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ville_lille%3Abornes_dateliers_velos_a_lille&OUTPUTFORMAT=application%2Fjson',  config);
+    console.log('Requête GET effectuée:', Vponse.data);
+        res.status(200).json(Vponse.data);
+        } catch(error) {
+            res.status(400).json({err: "Une erreur s'est produite. Reessayez"});
+        }
+}
