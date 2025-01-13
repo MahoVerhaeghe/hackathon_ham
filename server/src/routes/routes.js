@@ -21,6 +21,13 @@ export async function getBikeShelters(req, res)
 export async function getVlille(req, res)
 {
    try {
+     const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+  };
+    let Vponse = await axios.get('https://data.lillemetropole.fr/data/ogcapi/collections/ilevia:vlille_temps_reel/items?f=json&limit=-1',  config);
+    console.log('Requête GET effectuée:', Vponse.data);
         res.status(200).json(Vponse.data.records);
         } catch(error) {
             res.status(400).json({err: "Une erreur s'est produite. Reessayez"});

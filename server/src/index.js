@@ -27,6 +27,6 @@ indexRouter.get('/ok', (req, res) => {
 
 indexRouter.get('/getBikeShelters', (req, res) => getBikeShelters(req, res));
 indexRouter.get('/getVlille', (req, res) => getVlille(req, res));
-indexRouter.get('');
+indexRouter.get('')
 
 export default indexRouter;

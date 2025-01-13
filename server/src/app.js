@@ -36,38 +36,24 @@ const app = express();
 //   }
 // }
 
-// connectToCluster();
 
-// process.on('SIGINT', async () => {
-//   try {
-//     // Fermer la connexion MongoDB
-//     await mongoClient.close();
-//     console.log('Déconnexion de MongoDB');
-//     process.exit(0);
-//   } catch (error) {
-//     console.error('Erreur lors de la déconnexion de MongoDB:', error);
-//     process.exit(1);
-//   }
-// });
 
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-// app.use(session({
-//   secret: `${session_secret}`,
-//   resave: false,
-//   proxy: true,
-// cookie: {
-//       sameSite: 'none',
-//       secure: true,
-//       //httpOnly: true,
-//      // domain: '.onrender.com',
-//       maxAge: 24 * 60 * 60 * 1000
-// },
-//   saveUninitialized: false,
-//   store: MongoStore.create({mongoUrl: mongo_cluster})
-// }));
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(session({
+   secret: `${session_secret}`,
+   resave: false,
+   proxy: true,
+ cookie: {
+      sameSite: 'none',
+      secure: true,
+      //httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000
+},
+  saveUninitialized: false,
+}));
 
 
 app.use('/', indexRouter);
