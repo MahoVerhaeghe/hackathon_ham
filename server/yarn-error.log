@@ -1,0 +1,91 @@
+Arguments: 
+  /usr/bin/node /usr/local/bin/yarn add localtunell
+
+PATH: 
+  /home/HLC/.local/bin:/home/HLC/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/lib/snapd/snap/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.18.1
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/localtunell: Not found
+      at Request.params.callback [as _callback] (/usr/local/lib/node_modules/yarn/lib/cli.js:66145:18)
+      at Request.self.callback (/usr/local/lib/node_modules/yarn/lib/cli.js:140890:22)
+      at Request.emit (node:events:513:28)
+      at Request.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141862:10)
+      at Request.emit (node:events:513:28)
+      at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:627:28)
+      at IncomingMessage.emit (node:events:525:35)
+      at endReadableNT (node:internal/streams/readable:1358:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
+
+npm manifest: 
+  {
+    "name": "area-server",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "prestart": "babel ./src --out-dir build",
+      "start": "node ./src/bin/www",
+      "startdev": "nodemon --exec babel-node ./src/bin/www",
+      "lint": "./node_modules/.bin/eslint ./src",
+      "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
+      "postpretty": "yarn lint --fix"
+    },
+    "dependencies": {
+      "@babel/cli": "^7.23.4",
+      "@babel/core": "^7.23.5",
+      "@babel/node": "^7.22.19",
+      "@babel/plugin-transform-runtime": "^7.23.4",
+      "@babel/preset-env": "^7.23.5",
+      "@babel/register": "^7.22.15",
+      "@babel/runtime": "^7.23.5",
+      "axios": "^1.6.2",
+      "axios-retry": "^4.0.0",
+      "connect-livereload": "^0.6.1",
+      "connect-redis": "^7.1.0",
+      "cookie-parser": "~1.4.4",
+      "cookie-session": "^2.0.0",
+      "cors": "^2.8.5",
+      "debug": "~2.6.9",
+      "dotenv": "^16.3.1",
+      "eslint": "^8.55.0",
+      "eslint-config-airbnb-base": "^15.0.0",
+      "eslint-plugin-import": "^2.29.0",
+      "express": "~4.16.1",
+      "express-session": "^1.17.3",
+      "googleapis": "^129.0.0",
+      "http-errors": "~1.6.3",
+      "jsonwebtoken": "^9.0.2",
+      "mongodb": "^6.3.0",
+      "morgan": "~1.9.1",
+      "nodemailer": "^6.9.7",
+      "nodemon": "^3.0.2",
+      "octokit": "^3.1.2",
+      "passport": "^0.7.0",
+      "passport-discord": "^0.1.4",
+      "passport-google-oauth": "^2.0.0",
+      "passport-google-oauth20": "^2.0.0",
+      "passport-oauth2": "^1.7.0",
+      "passport-reddit": "^1.1.0",
+      "prettier": "^3.1.0",
+      "readable-stream": "^4.5.2",
+      "redis": "^4.6.12",
+      "twitter-api-v2": "^1.15.2",
+      "undici": "^6.2.1",
+      "uuid": "^9.0.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
