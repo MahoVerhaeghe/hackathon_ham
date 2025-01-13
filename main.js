@@ -70,6 +70,7 @@ function addMarker(lat, lon, texte, icone) {
 }
 
 // == User Position Handling ==
+
 function handleUserPosition(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
@@ -134,7 +135,17 @@ if (navigator.geolocation) {
     handleLocationError(); // Ask for manual input if geolocation is unavailable
 }
 
+// == Button to Refresh Location ==
+function refreshLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(handleUserPosition, handleLocationError);
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
 // == Routing to the Nearest Bicycle Box ==
+
 function addRouteToNearestBox(userLat, userLon, boxes) {
     let nearestBox = boxes[0];
     let minDistance = Infinity;
