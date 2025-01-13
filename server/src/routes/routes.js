@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Vponse } from '..';
 
 
 export async function getBikeShelters(req, res)
@@ -16,3 +17,13 @@ export async function getBikeShelters(req, res)
             res.status(400).json({err: "Une erreur s'est produite. Reessayez"});
         }
 }
+
+export async function getVlille(req, res)
+{
+   try {
+        res.status(200).json(Vponse.data.records);
+        } catch(error) {
+            res.status(400).json({err: "Une erreur s'est produite. Reessayez"});
+        }
+}
+
