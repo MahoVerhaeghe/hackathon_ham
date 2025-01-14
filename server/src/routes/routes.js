@@ -66,3 +66,36 @@ export async function getRepairBike(req, res)
             res.status(400).json({err: "Une erreur s'est produite. Reessayez"});
         }
 }
+
+export async function getHoops(req, res) {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+
+        const Vponse = await axios.get('https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ville_roubaix%3Aimplantation_des_arceaux_velos_a_roubaix&OUTPUTFORMAT=application%2Fjson', config);
+        res.status(200).json(Vponse.data.features);
+
+    }    catch(error) {
+        res.status(400).json({err: "Une erreur s'est produite"});
+    }
+}
+
+export async function getedpm_va(req, res) {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }
+
+        const Vponse = await axios.get('https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mel_mobilite_et_transport%3Aedpm_vae_libreservice&OUTPUTFORMAT=application%2Fjson', config);
+        res.status(200).json(Vponse.data.features);
+
+    }    catch(error) {
+        res.status(400).json({err: "Une erreur s'est produite"});
+    }
+}
+
