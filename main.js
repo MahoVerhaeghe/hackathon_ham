@@ -50,8 +50,8 @@ var iconAbriVelo = L.divIcon({
 
 // Icon: Espaces de stationnement (TE et VAE en libre service)
 var iconParkingLS = L.divIcon({
-    html: '<div style="background-color: teal; width: 10px; height: 10px; border-radius: 50%;"></div>',
-    iconSize: [10, 10],
+    html: '<div style="background-color: teal; width: 8px; height: 8px; border-radius: 50%;"></div>',
+    iconSize: [8, 10],
     className: '',
     iconAnchor: [5, 5]
 });
@@ -79,7 +79,6 @@ async function importDataFromApi(path) {
     try {
         const response = await fetch('http://localhost:8080/'+ path)
         const data = await response.json()
-        console.log(data)
         return data
     } catch (error) {
         console.error('Erreur:', error);
@@ -91,23 +90,22 @@ async function importDataFromApi(path) {
 let parkings = [];
 
 // import DATA Implantation des arceaux vélos à Roubaix
-// importCSV("https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ville_roubaix%3Aimplantation_des_arceaux_velos_a_roubaix&OUTPUTFORMAT=csv")
-// .then((response) => {
-//         response.forEach((place) => {
-//             if (place['geom'].includes('POINT')) {
-//                 var coords = place['geom'].replace('(', '').replace(')', '').split(' ');
-//                 const lat = parseFloat(coords[1]);
-//                 const lon = parseFloat(coords[2]);
-//                 parkings.push({
-//                     lat: lat,
-//                     lon: lon
-//                 })
-//                 addMarker(lat, lon, place['localisation'], iconArceaux);
-//             }
-//         });
-//     });
+importDataFromApi('getHoops')
+    .then(response => {
+        response.forEach((place) => {
+            var coords = [place['geometry']['coordinates'][1], place['geometry']['coordinates'][0]];
+            const lat = parseFloat(coords[0]);
+            const lon = parseFloat(coords[1]);
+            parkings.push({
+                lat: lat,
+                lon: lon
+            })
+            addMarker(lat, lon, place['properties']['localisation'], iconArceaux);
+        })
+    })
+    .catch(error => console.error('Erreur lors de l\'import des données :', error));
 
-// import DATA Box à vélos à Lille, Lomme et Hellemmes
+// // import DATA Box à vélos à Lille, Lomme et Hellemmes
 importDataFromApi('getBoxBike')
     .then(response => {
         response.forEach((place) => {
@@ -123,10 +121,10 @@ importDataFromApi('getBoxBike')
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
 
-// import DATA Stations de réparations de vélo à Lille
+// // import DATA Stations de réparations de vélo à Lille
 importDataFromApi('getRepairBike')
     .then(response => {
-        response.forEach((place) => {
+        response['features'].forEach((place) => {
             var coords = [place['geometry']['coordinates'][1], place['geometry']['coordinates'][0]];
             const lat = parseFloat(coords[0]);
             const lon = parseFloat(coords[1]);
@@ -136,7 +134,7 @@ importDataFromApi('getRepairBike')
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
 
-//import DATA ilévia - Abris à vélos
+// //import DATA ilévia - Abris à vélos
 importDataFromApi('getBikeShelters')
     .then(response => {
         response.forEach((place) => {
@@ -153,22 +151,21 @@ importDataFromApi('getBikeShelters')
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
 
 // import DATA Espaces de stationnement (TE et VAE en libre service)
-// importCSV("https://data.lillemetropole.fr/geoserver/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=mel_mobilite_et_transport%3Aedpm_vae_libreservice&OUTPUTFORMAT=csv")
-//     .then((response) => {
-//         response.forEach((place) => {
-//             if (place['geom'].includes('POINT')) {
-//                 const lat = parseFloat(place['y_lat']);
-//                 const lon = parseFloat(place['x_long']);
-//                /* parkings.push({
-//                     lat: lat,
-//                     lon: lon
-//                 })*/
-//                 // TODO Filtre et à désactiver par défaut (il y en a trop à afficher !!!)
-//                 // addMarker(lat, lon, place['nom_voie'], iconParkingLS);
-//             }
-//         });
-//     });
-
+importDataFromApi('getedpm_va_self_service')
+    .then(response => {
+        response.forEach((place) => {
+            var coords = convertLambert93ToWGS84(place['geometry']['coordinates'][0], place['geometry']['coordinates'][1]);
+            const lat = parseFloat(coords[0]);
+            const lon = parseFloat(coords[1]);
+            parkings.push({
+                lat: lat,
+                lon: lon
+            })
+            // TODO Filter as Unchecked
+            // addMarker(lat, lon, place['properties']['nom_voie'], iconParkingLS);
+        })
+    })
+    .catch(error => console.error('Erreur lors de l\'import des données :', error));
 
 // import DATA V'Lille - Disponibilité en temps réel
 importDataFromApi('getVlille')

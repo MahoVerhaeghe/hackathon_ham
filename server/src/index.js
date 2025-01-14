@@ -1,5 +1,5 @@
 import express from 'express';
-import { getBikeShelters, getVlille, getBoxBike, getRepairBike, getHoops} from './routes/routes';
+import { getBikeShelters, getVlille, getBoxBike, getRepairBike, getHoops, getedpm_va} from './routes/routes';
 
 import cron from 'node-cron'
 import axios from 'axios';
