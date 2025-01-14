@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hackathon</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <!-- Add Leaflet Geocoder stylesheet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
         #map {
             height: 600px;
@@ -13,20 +16,14 @@
     </style>
 </head>
 <body>
-    <h1>Carte de la Métropole Lilloise</h1>
+<h1>Carte de la Métropole Lilloise</h1>
 
-    <!--<div id="filters">
-      
-      <h3>Filtres</h3>
-      <label><input type="checkbox" id="filterTypeInstallation_automatisé" checked> Automatisé</label><br>
-      <label><input type="checkbox" id="filter_arceaux" checked> Arceaux Vélos</label><br>
-      <label><input type="checkbox" id="filterTypeInstallation_indifférent" checked> Indifférent</label><br>
-    </div><br><br>
-    -->
-
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/proj4@2.15.0/dist/proj4.js"></script>
-    <script type="module" src="main.js"></script>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/proj4@2.15.0/dist/proj4.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<!-- Add Leaflet Geocoder library -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>
