@@ -83,6 +83,18 @@ var iconVLilleOff = L.divIcon({
 
 // == START API Import ==
 
+async function importDataFromApi(path) {
+    try {
+        const response = await fetch('http://localhost:8080/'+ path)
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error('Erreur:', error);
+        return {}
+    }
+}
+
+
 /**
  * METHODE TEMPORAIRE POUR POUVOIR IMPORTER DES DONNEES, RETOURNE DES DONNEES SOUS FORME D'OBJET
  * @param {*} path chemin vers l'api
