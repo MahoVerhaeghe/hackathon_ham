@@ -17,3 +17,27 @@
     height: 550px;
     width: 100%;
 }
+
+#arceaux {
+    color: purple;
+}
+
+#box {
+    color: brown;
+}
+
+#station {
+    color: green;
+}
+
+#abri {
+    color: red;
+}
+
+#parkingLS {
+    color: teal;
+}
+
+#vlille {
+    color: grey;
+}
