@@ -7,6 +7,10 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+let user;
+let itineraireEnCours;
+let markers = [];
+
 // == End of Initialisation ==
 
 // == START Icon and Marker ==
@@ -89,8 +93,40 @@ async function importDataFromApi(path) {
 
 let parkings = [];
 
+function updateFilter(){
+    if (itineraireEnCours) {
+        map.removeControl(itineraireEnCours);
+    }
+
+    markers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    markers = [];
+    L.marker([user[0], user[1]], { icon: iconUserPosition, interactive: false }).addTo(map);
+
+    if (document.getElementById('arceauxFilter').checked)
+        importHoop()
+
+    if (document.getElementById('boxFilter').checked)
+        importBoxBike()
+
+    if (document.getElementById('stationFilter').checked)
+        importRepairBike()
+
+    if (document.getElementById('abriFilter').checked)
+        importShelters()
+
+    if (document.getElementById('parkingLSFilter').checked)
+        importParkingLS()
+
+    if (document.getElementById('vlilleFilter').checked)
+        importVLille()
+
+}
+
 // import DATA Implantation des arceaux vélos à Roubaix
-importDataFromApi('getHoops')
+function importHoop() {
+    importDataFromApi('getHoops')
     .then(response => {
         response.forEach((place) => {
             var coords = [place['geometry']['coordinates'][1], place['geometry']['coordinates'][0]];
@@ -104,9 +140,12 @@ importDataFromApi('getHoops')
         })
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
+}
+
 
 // // import DATA Box à vélos à Lille, Lomme et Hellemmes
-importDataFromApi('getBoxBike')
+function importBoxBike() {
+    importDataFromApi('getBoxBike')
     .then(response => {
         response.forEach((place) => {
             var coords = [place['geometry']['coordinates'][0][1], place['geometry']['coordinates'][0][0]];
@@ -120,9 +159,12 @@ importDataFromApi('getBoxBike')
         });
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
+}
+
 
 // // import DATA Stations de réparations de vélo à Lille
-importDataFromApi('getRepairBike')
+function importRepairBike() {
+    importDataFromApi('getRepairBike')
     .then(response => {
         response['features'].forEach((place) => {
             var coords = [place['geometry']['coordinates'][1], place['geometry']['coordinates'][0]];
@@ -133,9 +175,12 @@ importDataFromApi('getRepairBike')
         });
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
+}
+
 
 // //import DATA ilévia - Abris à vélos
-importDataFromApi('getBikeShelters')
+function importShelters() {
+    importDataFromApi('getBikeShelters')
     .then(response => {
         response.forEach((place) => {
             var coords = [place['geometry']['coordinates'][1], place['geometry']['coordinates'][0]];
@@ -149,9 +194,12 @@ importDataFromApi('getBikeShelters')
         });
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
+}
+
 
 // import DATA Espaces de stationnement (TE et VAE en libre service)
-importDataFromApi('getedpm_va_self_service')
+function importParkingLS() {
+    importDataFromApi('getedpm_va_self_service')
     .then(response => {
         response.forEach((place) => {
             var coords = convertLambert93ToWGS84(place['geometry']['coordinates'][0], place['geometry']['coordinates'][1]);
@@ -166,9 +214,12 @@ importDataFromApi('getedpm_va_self_service')
         })
     })
     .catch(error => console.error('Erreur lors de l\'import des données :', error));
+}
+
 
 // import DATA V'Lille - Disponibilité en temps réel
-importDataFromApi('getVlille')
+function importVLille() {
+    importDataFromApi('getVlille')
     .then(response => {
         response.forEach((place) => {
             var coords = [place['y'], place['x']];
@@ -186,7 +237,7 @@ importDataFromApi('getVlille')
         });
     })
     .catch(error => console.error("Erreur lors de l'import des données :", error));
-
+}
 
 
 // == END API Import ==
@@ -194,37 +245,50 @@ importDataFromApi('getVlille')
 // == START Method initialisation ==
 
 function addMarker(lat, lon, texte, icone) {
-    L.marker([lat, lon], { icon: icone }).addTo(map)
-        .bindPopup(texte);
+    const popupContent = `
+        ${texte}<br>
+        <button onclick="calculateItineraire(${lat},${lon})">Allez ici</button>
+    `;
+
+    let marker = L.marker([lat, lon], { icon: icone }).addTo(map)
+        .bindPopup(popupContent);
+
+    markers.push(marker)
 }
 
 // == Add Routing Functionality ==
 
 // Initialize the routing control
 let routingControl = L.Routing.control({
-    waypoints: [
-        L.latLng(50.62925, 3.057256),  // Starting point (can be dynamic)
-        L.latLng(50.62950, 3.05750)    // End point (can be dynamic)
-    ],
+    // waypoints: [
+    //     L.latLng(50.62925, 3.057256),  // Starting point (can be dynamic)
+    //     L.latLng(50.62950, 3.05750)    // End point (can be dynamic)
+    // ],
     routeWhileDragging: true,   // Allow route to update while dragging
     geocoder: L.Control.Geocoder.nominatim() // Geocoding for address lookup
 }).addTo(map);
 
-function addRouteToNearestParking(userLat, userLon) {
-    let nearestParking = parkings[0];
+function addRouteToNearestParking() {
+    sleep(2000).then(() => {});
+
     let minDistance = Infinity;
+    let nearestParking = parkings[0]
 
     parkings.forEach(parking => {
-        const distance = getDistance(userLat, userLon, parking.lat, parking.lon);
+        const distance = getDistance(user[0], user[1], parking.lat, parking.lon);
         if (distance < minDistance) {
             nearestParking = parking;
             minDistance = distance;
         }
     });
 
-    L.Routing.control({
+    if (itineraireEnCours) {
+        map.removeControl(itineraireEnCours);
+    }
+
+    itineraireEnCours = L.Routing.control({
         waypoints: [
-            L.latLng(userLat, userLon),
+            L.latLng(user[0], user[1]),
             L.latLng(nearestParking.lat, nearestParking.lon)
         ]
     }).addTo(map);
@@ -245,6 +309,23 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return R * c; // Return distance in meters
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function calculateItineraire(lat,lon){
+    if (itineraireEnCours) {
+        map.removeControl(itineraireEnCours);
+    }
+
+    itineraireEnCours = L.Routing.control({
+        waypoints: [
+            L.latLng(user[0], user[1]),
+            L.latLng(lat, lon)
+        ]
+    }).addTo(map);
+}
+
 
 // == Method calling ==
 
@@ -253,6 +334,7 @@ if (navigator.geolocation) {
         function (position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
+            user = [lat,lon];
 
             // Set the map view to the user's location
             map.setView([lat, lon], 14);
@@ -260,8 +342,7 @@ if (navigator.geolocation) {
             // Add a marker at the user's location
             L.marker([lat, lon], { icon: iconUserPosition, interactive: false }).addTo(map);
 
-            // Update the routing waypoints
-            addRouteToNearestParking(lat, lon);
+            updateFilter()
         },
         function () {
             console.warn("Localisation refusée ou indisponible.");
@@ -292,8 +373,6 @@ function askForAddress() {
                     // Add a marker at the entered address location
                     L.marker([lat, lon], { icon: iconUserPosition, interactive: false }).addTo(map);
 
-                    // Update the routing waypoints
-                    addRouteToNearestParking(lat, lon);
                 } else {
                     alert("Adresse introuvable. Veuillez réessayer.");
                     askForAddress();
@@ -309,3 +388,8 @@ function askForAddress() {
     }
 }
 
+// === START Initialisation function in HTML ===
+
+window.addRouteToNearestParking = addRouteToNearestParking;
+window.calculateItineraire = calculateItineraire
+window.updateFilter = updateFilter

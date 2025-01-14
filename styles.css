@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+}
+
+.left-column {
+    width: 50%;
+    padding-right: 20px;
+}
+
+.right-column {
+    width: 50%;
+}
+
+#map {
+    height: 550px;
+    width: 100%;
+}

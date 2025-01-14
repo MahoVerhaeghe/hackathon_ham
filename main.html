@@ -6,24 +6,33 @@
     <title>Hackathon</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <!-- Add Leaflet Geocoder stylesheet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-    <style>
-        #map {
-            height: 600px;
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Carte de la Métropole Lilloise</h1>
+    <div class="container">
+        <div class="left-column">
+            <h1>Carte de la Métropole Lilloise</h1>
+            <button onclick="addRouteToNearestParking()">Cherchez le parking le plus proche</button>
+        </div>
 
-<div id="map"></div>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/proj4@2.15.0/dist/proj4.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<!-- Add Leaflet Geocoder library -->
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<script type="module" src="main.js"></script>
+        <div class="right-column">
+            <h3>Légende et filtre</h3>
+            <label><input onclick="updateFilter()" type="checkbox" id="arceauxFilter" checked> Arceaux</label><br>
+            <label><input onclick="updateFilter()" type="checkbox" id="boxFilter" checked> Box</label><br>
+            <label><input onclick="updateFilter()" type="checkbox" id="stationFilter" checked> Stations</label><br>
+            <label><input onclick="updateFilter()" type="checkbox" id="abriFilter" checked> Abris Vélo</label><br>
+            <label><input onclick="updateFilter()" type="checkbox" id="parkingLSFilter" checked> Parking LS</label><br>
+            <label><input onclick="updateFilter()" type="checkbox" id="vlilleFilter" unchecked> V'Lille</label><br>
+        </div>
+    </div>
+
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/proj4@2.15.0/dist/proj4.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script type="module" src="main.js"></script>
 </body>
 </html>
