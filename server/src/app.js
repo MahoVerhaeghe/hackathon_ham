@@ -55,6 +55,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+app.use(cors());
 
 app.use('/', indexRouter);
 
