@@ -174,10 +174,6 @@ importDataFromApi('getVlille')
             var coords = [place['y'], place['x']];
             const lat = parseFloat(coords[0]);
             const lon = parseFloat(coords[1]);
-            // boxes.push({
-            //     lat: lat,
-            //     lon: lon
-            // });
             var txt = place['adresse'];
             if (place['etat'] == 'EN SERVICE') {
                 txt += "<br>Vélos disponibles: " + place['nb_velos_dispo'] + "<br>Places disponibles: " + place['nb_places_dispo'];
@@ -205,56 +201,56 @@ function addMarker(lat, lon, texte, icone) {
 // == Add Routing Functionality ==
 
 // Initialize the routing control
-// let routingControl = L.Routing.control({
-//     waypoints: [
-//         L.latLng(50.62925, 3.057256),  // Starting point (can be dynamic)
-//         L.latLng(50.62950, 3.05750)    // End point (can be dynamic)
-//     ],
-//     routeWhileDragging: true,   // Allow route to update while dragging
-//     geocoder: L.Control.Geocoder.nominatim() // Geocoding for address lookup
-// }).addTo(map);
+let routingControl = L.Routing.control({
+    waypoints: [
+        L.latLng(50.62925, 3.057256),  // Starting point (can be dynamic)
+        L.latLng(50.62950, 3.05750)    // End point (can be dynamic)
+    ],
+    routeWhileDragging: true,   // Allow route to update while dragging
+    geocoder: L.Control.Geocoder.nominatim() // Geocoding for address lookup
+}).addTo(map);
 
-// function addRouteToNearestParking(userLat, userLon) {
-//     let nearestParking = parkings[0];
-//     let minDistance = Infinity;
+function addRouteToNearestParking(userLat, userLon) {
+    let nearestParking = parkings[0];
+    let minDistance = Infinity;
 
-//     parkings.forEach(parking => {
-//         const distance = getDistance(userLat, userLon, parking.lat, parking.lon);
-//         if (distance < minDistance) {
-//             nearestParking = parking;
-//             minDistance = distance;
-//         }
-//     });
+    parkings.forEach(parking => {
+        const distance = getDistance(userLat, userLon, parking.lat, parking.lon);
+        if (distance < minDistance) {
+            nearestParking = parking;
+            minDistance = distance;
+        }
+    });
 
-//     L.Routing.control({
-//         waypoints: [
-//             L.latLng(userLat, userLon),
-//             L.latLng(nearestParking.lat, nearestParking.lon)
-//         ]
-//     }).addTo(map);
-// }
+    L.Routing.control({
+        waypoints: [
+            L.latLng(userLat, userLon),
+            L.latLng(nearestParking.lat, nearestParking.lon)
+        ]
+    }).addTo(map);
+}
 
-// function getDistance(lat1, lon1, lat2, lon2) {
-//     var R = 6371000; // Earth radius in meters
-//     var φ1 = lat1 * Math.PI / 180;
-//     var φ2 = lat2 * Math.PI / 180;
-//     var Δφ = (lat2 - lat1) * Math.PI / 180;
-//     var Δλ = (lon2 - lon1) * Math.PI / 180;
+function getDistance(lat1, lon1, lat2, lon2) {
+    var R = 6371000; // Earth radius in meters
+    var φ1 = lat1 * Math.PI / 180;
+    var φ2 = lat2 * Math.PI / 180;
+    var Δφ = (lat2 - lat1) * Math.PI / 180;
+    var Δλ = (lon2 - lon1) * Math.PI / 180;
 
-//     var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-//         Math.cos(φ1) * Math.cos(φ2) *
-//         Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-//     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-//     return R * c; // Return distance in meters
-// }
+    return R * c; // Return distance in meters
+}
 
 
 // == Method calling ==
 
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-        function(position) {
+        function (position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
 
@@ -264,13 +260,52 @@ if (navigator.geolocation) {
             // Add a marker at the user's location
             L.marker([lat, lon], { icon: iconUserPosition, interactive: false }).addTo(map);
 
-            // Update the routing waypoints 
-            // addRouteToNearestParking(lat, lon);
-
+            // Update the routing waypoints
+            addRouteToNearestParking(lat, lon);
         },
-        function() {
+        function () {
             console.warn("Localisation refusée ou indisponible.");
+            askForAddress();
         }
     );
+} else {
+    console.warn("La géolocalisation n'est pas supportée par ce navigateur.");
+    askForAddress();
+}
+
+function askForAddress() {
+    // Prompt the user to enter their address
+    var userAddress = prompt("Veuillez entrer votre adresse :");
+
+    if (userAddress) {
+        // Fetch the latitude and longitude using the Nominatim API
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userAddress)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var lat = parseFloat(data[0].lat);
+                    var lon = parseFloat(data[0].lon);
+
+                    // Set the map view to the entered address location
+                    map.setView([lat, lon], 14);
+
+                    // Add a marker at the entered address location
+                    L.marker([lat, lon], { icon: iconUserPosition, interactive: false }).addTo(map);
+
+                    // Update the routing waypoints
+                    addRouteToNearestParking(lat, lon);
+                } else {
+                    alert("Adresse introuvable. Veuillez réessayer.");
+                    askForAddress();
+                }
+            })
+            .catch(error => {
+                console.error("Erreur lors de la récupération des coordonnées :", error);
+                alert("Une erreur s'est produite lors de la récupération des coordonnées. Veuillez réessayer.");
+                askForAddress();
+            });
+    } else {
+        alert("Adresse non saisie. La géolocalisation est nécessaire pour continuer.");
+    }
 }
 
